@@ -1,10 +1,13 @@
-# Use OpenJDK 17
-FROM openjdk:17-jdk-slim
-
+# Stage 1: Build the application
+FROM maven:3.9.4-eclipse-temurin-17 AS build
 WORKDIR /app
-COPY target/*.jar app.jar
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
+# Stage 2: Run the application
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-  # Still okay to expose 8080 for local use
-
 ENTRYPOINT ["java", "-jar", "app.jar"]
