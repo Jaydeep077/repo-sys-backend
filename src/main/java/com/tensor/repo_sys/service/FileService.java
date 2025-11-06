@@ -119,4 +119,19 @@ public class FileService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (authentication != null) ? authentication.getName() : null;
     }
+
+
+    //delete file
+@Transactional
+public void deleteFile(Long repoId, Long fileId) {
+    File file = fileRepository.findById(fileId)
+            .orElseThrow(() -> new ResourceNotFoundException("File", "id", fileId));
+
+    if (file.getRepository() == null || !file.getRepository().getId().equals(repoId)) {
+        throw new ResourceNotFoundException("File does not belong to repository!");
+    }
+
+    fileRepository.delete(file);
+}
+
 }

@@ -32,4 +32,15 @@ public class FileController {
     public ResponseEntity<byte[]> downloadFile(@PathVariable Long repoId, @PathVariable Long fileId) {
         return fileService.downloadFile(repoId, fileId);
     }
-}
+
+    @DeleteMapping("/{fileId}")
+    public ResponseEntity<String> deleteFile(@PathVariable Long repoId, @PathVariable Long fileId) {
+        try {
+            fileService.deleteFile(repoId, fileId);
+            return ResponseEntity.ok("File deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error deleting file: " + e.getMessage());
+        }
+    }
+
+    }
